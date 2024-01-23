@@ -49,12 +49,15 @@ const server = http.createServer((request, response) => {
             email: 'emailjson@hotmail.com'
         })
 
-        return response.end('criação user')
+        /* 
+            201 usado em criações como post
+        */
+        return response.writeHead(201).end()
     }
 
 
 
-    return response.end('Hello Word')
+    return response.writeHead(404).end()
 
 })
 
