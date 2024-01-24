@@ -29,6 +29,9 @@ import {
 import {
     routes
 } from './routes.js'
+import {
+    extractQueryParams
+} from './utils/extract-query-params.js'
 
 
 /* unique universal ID */
@@ -51,6 +54,17 @@ const server = http.createServer(async (request, response) => {
     if (route) {
 
         const routeParams = request.url.match(route.path)
+
+        const {
+            query,
+            ...params
+        } = routeParams.groups
+
+        request.params = params
+        request.query = query ? extractQueryParams(routeParams.groups.query) : {}
+
+
+
 
         return route.handler(request, response)
     }

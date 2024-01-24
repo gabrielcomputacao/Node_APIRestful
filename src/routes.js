@@ -17,6 +17,8 @@ export const routes = [{
         handler: (req, res) => {
             const users = database.select('users')
 
+            console.log(req.query)
+
             //Early return
             return res.end(JSON.stringify(users))
         }
@@ -48,11 +50,47 @@ export const routes = [{
     },
     {
         method: 'DELETE',
-        path: buildRoutePath('/users:id'),
+        path: buildRoutePath('/users/:id'),
         handler: (req, res) => {
 
+            const {
+                id
+            } = req.params
 
+            database.delete('users', id)
+
+            /* 
+                status code 204 = resposta de sucesso sem nenhum conteudo
+            */
+
+            return res.writeHead(204).end()
         }
-    }
+    },
+    {
+        method: 'PUT',
+        path: buildRoutePath('/users/:id'),
+        handler: (req, res) => {
+
+            const {
+                id
+            } = req.params
+
+            const {
+                name,
+                email
+            } = req.body
+
+            database.update('users', id, {
+                name,
+                email
+            })
+
+            /* 
+                status code 204 = resposta de sucesso sem nenhum conteudo
+            */
+
+            return res.writeHead(204).end()
+        }
+    },
 
 ]
