@@ -26,8 +26,14 @@ import http from 'node:http'
 import {
     json
 } from './middlewares/json.js'
+import {
+    routes
+} from './routes.js'
 
-const users = []
+
+/* unique universal ID */
+
+
 
 const server = http.createServer(async (request, response) => {
     const {
@@ -36,38 +42,18 @@ const server = http.createServer(async (request, response) => {
     } = request
     console.log(method, url)
 
-
-
     await json(request, response)
 
+    const route = routes.find(route => {
+        return route.method === method && route.path.test(url)
+    })
 
+    if (route) {
 
+        const routeParams = request.url.match(route.path)
 
-    if (method === 'GET' && url === '/users') {
-        //Early return
-        return response.end(JSON.stringify(users))
+        return route.handler(request, response)
     }
-
-    if (method === 'POST' && url === '/users') {
-        const {
-            name,
-            email
-        } = request.body
-
-
-        users.push({
-            id: 1,
-            name,
-            email,
-        })
-
-        /* 
-            201 usado em criações como post
-        */
-        return response.writeHead(201).end()
-    }
-
-
 
     return response.writeHead(404).end()
 
